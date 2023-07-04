@@ -22,7 +22,6 @@ fn (mut k Key) add_alias(alias string) {
 }
 
 fn (k Key) is_key(test string) bool {
-	if test == k.value { return true }
 	if test in k.alias { return true }
 	
 	return false
@@ -36,7 +35,7 @@ mut:
 
 pub fn Args.new(name string, desc string, epi string) Args {
 	mut x := Args { texts: [name, desc, epi] }
-	x.add_key('-h', ['--help'], 'Shows the help text.')
+	x.add_key('help', ['-h', '--help'], 'Shows the help text.')
 
 	return x
 }
@@ -50,10 +49,9 @@ pub fn (mut a Args) add_key(key string, alias []string, description string) {
 	a.keys << new_key
 }
 
-fn (a Args) get_all_keys() []string {
+fn (a Args) get_all_alias() []string {
 	mut keys := []string{}
 	for key in a.keys {
-		keys << key.value
 		for al in key.alias {
 			keys << al
 		}
@@ -64,12 +62,13 @@ fn (a Args) get_all_keys() []string {
 
 pub fn (mut a Args) parse() map[string]string {
 	mut ret := map[string]string{}
-	a.keys.sort(a.value < b.value)
+	a.keys.sort(a.alias[0] < b.alias[0])
 
-	for key in a.keys {
-		for arg in os.args {
+	for i, arg in os.args {
+		for key in a.keys {
 			if key.is_key(arg) {
-				ret[arg] = "test"
+				ret[key.value] = os.args[i+1]
+				break
 			}
 		}
 	}
@@ -84,7 +83,6 @@ pub fn (a Args) print_help() {
 	println('')
 	println('Options')
 	for key in a.keys {
-		print(key.value + " ")
 		for al in key.alias {
 			print(al + " ")
 		}
