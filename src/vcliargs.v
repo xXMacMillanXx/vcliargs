@@ -49,6 +49,15 @@ pub fn (mut a Args) add_key(key string, alias []string, description string) {
 	a.keys << new_key
 }
 
+fn (a Args) get_key_alias(key string) ?[]string {
+	for x in a.keys {
+		if key == x.value {
+			return x.alias
+		}
+	}
+	return none
+}
+
 fn (a Args) get_all_alias() []string {
 	mut keys := []string{}
 	for key in a.keys {
@@ -61,6 +70,14 @@ fn (a Args) get_all_alias() []string {
 }
 
 pub fn (mut a Args) parse() map[string]string {
+	h := a.get_key_alias('help')
+	for v in h {
+		if v in os.args {
+			a.print_help()
+			exit(0)
+		}
+	}
+
 	mut ret := map[string]string{}
 	a.keys.sort(a.alias[0] < b.alias[0])
 

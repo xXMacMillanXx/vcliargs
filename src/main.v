@@ -9,8 +9,6 @@ fn main() {
 
 	y := x.parse()
 
-	x.print_help()
-
 	for key in y.keys() {
 		println(key + " ... " + y[key])
 	}	
