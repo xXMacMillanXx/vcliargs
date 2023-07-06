@@ -2,11 +2,15 @@ module vcliargs
 
 import os
 
+[heap]
 struct Key {
 	value string
 	description string
 mut:
 	alias []string
+	is_valueless bool
+	contains_multiple bool
+	default string
 }
 
 fn Key.new(key string, description string) Key {
@@ -19,6 +23,12 @@ fn (mut k Key) add_alias(alias string) {
 	}
 
 	k.alias << alias
+}
+
+fn (mut k Key) set_options(def string, single bool, multiple bool) {
+	k.is_valueless = single
+	k.contains_multiple = multiple
+	k.default = def
 }
 
 fn (k Key) is_key(test string) bool {
@@ -49,6 +59,16 @@ pub fn (mut a Args) add_key(key string, alias []string, description string) {
 	a.keys << new_key
 }
 
+pub fn (mut a Args) add_advanced_key(key string, alias []string, description string, def string, single bool, multiple bool) {
+	mut new_key := Key.new(key, description)
+	for x in alias {
+		new_key.add_alias(x)
+	}
+	new_key.set_options(def, single, multiple)
+
+	a.keys << new_key
+}
+
 fn (a Args) get_key_alias(key string) ?[]string {
 	for x in a.keys {
 		if key == x.value {
@@ -70,6 +90,7 @@ fn (a Args) get_all_alias() []string {
 }
 
 pub fn (mut a Args) parse() map[string]string {
+	a.keys.sort(a.alias[0] < b.alias[0])
 	h := a.get_key_alias('help')
 	for v in h {
 		if v in os.args {
@@ -79,7 +100,12 @@ pub fn (mut a Args) parse() map[string]string {
 	}
 
 	mut ret := map[string]string{}
-	a.keys.sort(a.alias[0] < b.alias[0])
+
+	for key in a.keys {
+		if key.default != '' {
+			ret[key.value] = key.default
+		}
+	}
 
 	for i, arg in os.args {
 		for key in a.keys {
@@ -95,6 +121,8 @@ pub fn (mut a Args) parse() map[string]string {
 
 pub fn (a Args) print_help() {
 	println(a.texts[0]) // program name
+	println('')
+	println('usage: ') // TODO, automatic usage gen
 	println('')
 	println(a.texts[1]) // program description
 	println('')
