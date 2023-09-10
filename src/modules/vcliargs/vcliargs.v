@@ -10,7 +10,7 @@ mut:
 
 pub fn Args.new(name string, desc string, epi string) Args {
 	mut x := Args { texts: [name, desc, epi] }
-	x.add_key('help', ['-h', '--help'], 'Shows the help text.')
+	x.inject_key(x.key('help', 'Shows the help text.').alias('-h').alias('--help').valueless(true))
 
 	return x
 }
@@ -23,6 +23,7 @@ pub fn (mut a Args) inject_key(key Key) {
 	a.keys << key
 }
 
+[deprecated: 'use inject_key() with .alias(), .default(), etc. instead']
 pub fn (mut a Args) add_key(key string, alias []string, description string) {
 	mut new_key := Key.new(key, description)
 	for x in alias {
@@ -32,6 +33,7 @@ pub fn (mut a Args) add_key(key string, alias []string, description string) {
 	a.keys << new_key
 }
 
+[deprecated: 'use inject_key() with .alias(), .default(), etc. instead']
 pub fn (mut a Args) add_advanced_key(key string, alias []string, description string, def string, single bool, multiple bool) {
 	mut new_key := Key.new(key, description)
 	for x in alias {
