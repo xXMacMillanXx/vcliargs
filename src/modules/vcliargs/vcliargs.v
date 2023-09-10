@@ -10,7 +10,7 @@ mut:
 
 pub fn Args.new(name string, desc string, epi string) Args {
 	mut x := Args { texts: [name, desc, epi] }
-	x.inject_key(x.key('help', 'Shows the help text.').alias('-h').alias('--help').valueless(true))
+	x.inject_key(x.key('help', 'Shows the help text.').alias(['-h', '--help']).valueless(true))
 
 	return x
 }

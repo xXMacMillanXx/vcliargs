@@ -8,7 +8,7 @@ fn main() {
 	x.add_advanced_key('count', ['-c', '--count'], 'Counts something.', '100', false, false)
 	x.add_key('path', ['-p', '--path'], 'Path to something')
 
-	x.inject_key(x.key('param1', 'Tests new key creation').alias('-p1').alias('--param1').default('XYZ').valueless(false).multiple(true))
+	x.inject_key(x.key('param1', 'Tests new key creation').alias(['-p1', '--param1']).default('XYZ').valueless(false).multiple(true))
 
 	y := x.parse()
 

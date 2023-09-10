@@ -35,13 +35,9 @@ fn (mut k Key) set_options(def string, single bool, multiple bool) {
 	k.default = def
 }
 
-pub fn (k Key) alias(alias string) Key {
+pub fn (k Key) alias(alias []string) Key {
 	mut k2 := k
-	if alias in k2.alias {
-		return k2
-	}
-
-	k2.alias << alias
+	k2.alias.insert(k2.alias.len, alias)
 	return k2
 }
 

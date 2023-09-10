@@ -26,7 +26,7 @@ module main
 import vcliargs
 
 mut prep := vcliargs.Args.new('header', 'description', 'footer')
-prep.inject_key(prep.key('path', 'path for input file').alias('-p').alias('--path'))
+prep.inject_key(prep.key('path', 'path for input file').alias(['-p', '--path']))
 
 args := prep.parse()
 println('path contains: ' + args['path'])
