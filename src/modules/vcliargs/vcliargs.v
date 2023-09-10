@@ -15,6 +15,14 @@ pub fn Args.new(name string, desc string, epi string) Args {
 	return x
 }
 
+pub fn (a Args) key(key string, description string) Key {
+	return Key.new(key, description)
+}
+
+pub fn (mut a Args) inject_key(key Key) {
+	a.keys << key
+}
+
 pub fn (mut a Args) add_key(key string, alias []string, description string) {
 	mut new_key := Key.new(key, description)
 	for x in alias {
@@ -96,7 +104,11 @@ pub fn (a Args) print_help() {
 		for al in key.alias {
 			print(al + " ")
 		}
-		print(key.description + '\n')
+		print(key.description + ' ')
+		if key.uses_default {
+			print('Default: ' + key.default)
+		}
+		print('\n')
 	}
 	println('')
 	println(a.texts[2]) // program epilog
