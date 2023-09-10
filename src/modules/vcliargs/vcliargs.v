@@ -64,6 +64,13 @@ fn (a Args) get_all_alias() []string {
 	return keys
 }
 
+fn check_option(key Key, input string) {
+	if !key.is_valid_option(input) {
+		println('The option ${input} is not available for parameter ${key.alias}. Possible options are: ${key.options}')
+		exit(1)
+	}
+}
+
 pub fn (mut a Args) parse() map[string]string {
 	a.keys.sort(a.alias[0] < b.alias[0])
 	h := a.get_key_alias('help')
@@ -77,8 +84,9 @@ pub fn (mut a Args) parse() map[string]string {
 	mut ret := map[string]string{}
 
 	for key in a.keys {
-		if key.default != '' {
+		if key.uses_default {
 			ret[key.value] = key.default
+			check_option(key, key.default)
 		}
 	}
 
@@ -86,6 +94,7 @@ pub fn (mut a Args) parse() map[string]string {
 		for key in a.keys {
 			if key.is_key(arg) {
 				ret[key.value] = os.args[i+1]
+				check_option(key, os.args[i+1])
 				break
 			}
 		}
@@ -108,7 +117,10 @@ pub fn (a Args) print_help() {
 		}
 		print(key.description + ' ')
 		if key.uses_default {
-			print('Default: ' + key.default)
+			print('Default: ' + key.default + ' ')
+		}
+		if key.uses_options {
+			print('Options: ' + key.options.str())
 		}
 		print('\n')
 	}
