@@ -92,9 +92,16 @@ pub fn (mut a Args) parse() map[string]string {
 
 	for i, arg in os.args {
 		for key in a.keys {
-			if key.is_key(arg) {
-				ret[key.value] = os.args[i+1]
-				check_option(key, os.args[i+1])
+			if key.is_key(arg) { // TODO: for multiple values, iterate over args till new key is read
+				if !key.is_valueless {
+					ret[key.value] = os.args[i+1]
+					check_option(key, os.args[i+1])
+				}
+
+				if key.is_valueless {
+					ret[key.value] = key.value
+				}
+
 				break
 			}
 		}
@@ -114,6 +121,9 @@ pub fn (a Args) print_help() {
 	for key in a.keys {
 		for al in key.alias {
 			print(al + " ")
+			if !key.is_valueless {
+				print('VALUE ')
+			}
 		}
 		print(key.description + ' ')
 		if key.uses_default {

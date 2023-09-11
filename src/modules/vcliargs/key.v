@@ -1,8 +1,8 @@
 module vcliargs
 
-// implement builder like use for key
-// implement basic type check and converter, possible use for union?
-// add acceptable options; stop program with explaination if option doesn't exist
+// implement basic type check and converter, possible use for generics or only support for int, f64, bool and string?
+// implement keys which can hold multiple values; requires map changes or csv style string or just a 1:1 copy from args input
+// format help output for better readability
 
 [heap]
 struct Key {
@@ -10,8 +10,9 @@ struct Key {
 	description string
 mut:
 	alias []string
-	is_valueless bool // TODO
+	is_valueless bool
 	contains_multiple bool // TODO
+	values []string // TODO
 	uses_default bool
 	default string
 	uses_options bool
