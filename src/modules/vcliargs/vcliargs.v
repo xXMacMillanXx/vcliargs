@@ -110,6 +110,31 @@ pub fn (mut a Args) parse() map[string]string {
 	return ret
 }
 
+fn print_help_line(key Key) {
+	mut collection := map[string][]string{}
+
+	collection['alias'] << key.alias.join(' ')
+
+	if key.is_valueless {
+		collection['value'] << ''
+	} else {
+		if !key.uses_options && !key.uses_default {
+			collection['value'] << 'VALUE'
+		}
+		if key.uses_default {
+			collection['value'] << '{' + key.default + '}'
+		}
+		if key.uses_options {
+			collection['value'] << '[' + key.options.join(', ') + ']'
+		}
+	}
+
+	params := '${collection['alias'][0]}'
+	param_vals := '${collection['value'].join(' ')}'
+
+	println('${params:-20} ${param_vals:-20} ${key.description}')
+}
+
 pub fn (a Args) print_help() {
 	println(a.texts[0]) // program name
 	println('')
@@ -119,20 +144,7 @@ pub fn (a Args) print_help() {
 	println('')
 	println('Options')
 	for key in a.keys {
-		for al in key.alias {
-			print(al + " ")
-			if !key.is_valueless {
-				print('VALUE ')
-			}
-		}
-		print(key.description + ' ')
-		if key.uses_default {
-			print('Default: ' + key.default + ' ')
-		}
-		if key.uses_options {
-			print('Options: ' + key.options.str())
-		}
-		print('\n')
+		print_help_line(key)
 	}
 	println('')
 	println(a.texts[2]) // program epilog

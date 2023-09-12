@@ -1,8 +1,7 @@
 module vcliargs
 
-// implement basic type check and converter, possible use for generics or only support for int, f64, bool and string?
+// implement basic type check and converter, possible use for generics or only support for int, f64, bool and string?; requires map changes
 // implement keys which can hold multiple values; requires map changes or csv style string or just a 1:1 copy from args input
-// format help output for better readability
 
 [heap]
 struct Key {
