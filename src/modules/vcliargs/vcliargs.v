@@ -10,7 +10,7 @@ mut:
 
 pub fn Args.new(name string, desc string, epi string) Args {
 	mut x := Args { texts: [name, desc, epi] }
-	x.inject_key(x.key('help', 'Shows the help text.').alias(['-h', '--help']).valueless(true))
+	x.add_key(x.key('help', 'Shows the help text.').alias(['-h', '--help']).valueless(true))
 
 	return x
 }
@@ -19,29 +19,8 @@ pub fn (a Args) key(key string, description string) Key {
 	return Key.new(key, description)
 }
 
-pub fn (mut a Args) inject_key(key Key) {
+pub fn (mut a Args) add_key(key Key) {
 	a.keys << key
-}
-
-[deprecated: 'use inject_key() with .alias(), .default(), etc. instead']
-pub fn (mut a Args) add_key(key string, alias []string, description string) {
-	mut new_key := Key.new(key, description)
-	for x in alias {
-		new_key.add_alias(x)
-	}
-
-	a.keys << new_key
-}
-
-[deprecated: 'use inject_key() with .alias(), .default(), etc. instead']
-pub fn (mut a Args) add_advanced_key(key string, alias []string, description string, def string, single bool, multiple bool) {
-	mut new_key := Key.new(key, description)
-	for x in alias {
-		new_key.add_alias(x)
-	}
-	new_key.set_options(def, single, multiple)
-
-	a.keys << new_key
 }
 
 fn (a Args) get_key_alias(key string) ?[]string {
@@ -137,7 +116,7 @@ fn print_help_line(key Key) {
 			collection['value'] << 'VALUE'
 		}
 		if key.contains_multiple {
-			collection['value'] << '<VALUE2 ...>'
+			collection['value'] << '<VALUE ...>'
 		}
 		if key.uses_default {
 			collection['value'] << '{' + key.default + '}'
