@@ -71,6 +71,7 @@ fn check_option(key Key, input string) {
 	}
 }
 
+// parse needs a major rewrite with a simple tokenizer
 pub fn (mut a Args) parse() map[string]string {
 	a.keys.sort(a.alias[0] < b.alias[0])
 	h := a.get_key_alias('help')
@@ -92,10 +93,24 @@ pub fn (mut a Args) parse() map[string]string {
 
 	for i, arg in os.args {
 		for key in a.keys {
-			if key.is_key(arg) { // TODO: for multiple values, iterate over args till new key is read
+			if key.is_key(arg) {
 				if !key.is_valueless {
+					if i+1 >= os.args.len {
+						ret[key.value] = ''
+						break
+					}
 					ret[key.value] = os.args[i+1]
 					check_option(key, os.args[i+1])
+					if key.contains_multiple {
+						mut j := 1
+						if i+1+j < os.args.len {
+							for !os.args[i+1+j].starts_with('-') {
+								ret[key.value] += ';' + os.args[i+1+j]
+								j++
+								if i+1+j >= os.args.len { break }
+							}
+						}
+					}
 				}
 
 				if key.is_valueless {
@@ -120,6 +135,9 @@ fn print_help_line(key Key) {
 	} else {
 		if !key.uses_options && !key.uses_default {
 			collection['value'] << 'VALUE'
+		}
+		if key.contains_multiple {
+			collection['value'] << '<VALUE2 ...>'
 		}
 		if key.uses_default {
 			collection['value'] << '{' + key.default + '}'
