@@ -1,7 +1,7 @@
 module vcliargs
 
 // implement basic type check and converter, possible use for generics or only support for int, f64, bool and string?; requires map changes
-// implement keys which can hold multiple values; requires map changes or csv style string or just a 1:1 copy from args input
+// multiple values with types; requires map changes or csv style string or just a 1:1 copy from args input
 
 [heap]
 struct Key {
@@ -10,7 +10,7 @@ struct Key {
 mut:
 	alias []string
 	is_valueless bool
-	contains_multiple bool // TODO
+	contains_multiple bool
 	values []string // TODO
 	uses_default bool
 	default string

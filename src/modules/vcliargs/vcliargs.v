@@ -32,15 +32,22 @@ fn (a Args) get_key_alias(key string) ?[]string {
 	return none
 }
 
-fn (a Args) get_all_alias() []string {
-	mut keys := []string{}
+fn (a Args) get_key(s string) ?Key {
 	for key in a.keys {
-		for al in key.alias {
-			keys << al
+		if s in key.alias {
+			return key
 		}
 	}
+	return none
+}
 
-	return keys
+fn (a Args) is_key(s string) bool {
+	for key in a.keys {
+		if s in key.alias {
+			return true
+		}
+	}
+	return false
 }
 
 fn check_option(key Key, input string) {
@@ -50,7 +57,6 @@ fn check_option(key Key, input string) {
 	}
 }
 
-// parse needs a major rewrite with a simple tokenizer
 pub fn (mut a Args) parse() map[string]string {
 	a.keys.sort(a.alias[0] < b.alias[0])
 	h := a.get_key_alias('help')
@@ -71,32 +77,31 @@ pub fn (mut a Args) parse() map[string]string {
 	}
 
 	for i, arg in os.args {
-		for key in a.keys {
-			if key.is_key(arg) {
-				if !key.is_valueless {
-					if i+1 >= os.args.len {
-						ret[key.value] = ''
-						break
-					}
-					ret[key.value] = os.args[i+1]
-					check_option(key, os.args[i+1])
-					if key.contains_multiple {
-						mut j := 1
-						if i+1+j < os.args.len {
-							for !os.args[i+1+j].starts_with('-') {
-								ret[key.value] += ';' + os.args[i+1+j]
-								j++
-								if i+1+j >= os.args.len { break }
-							}
-						}
-					}
-				}
-
-				if key.is_valueless {
-					ret[key.value] = key.value
-				}
-
+		if a.is_key(arg) {
+			key := a.get_key(arg) or { panic(err) }
+			if key.is_valueless {
+				ret[key.value] = key.value
+				continue
+			}
+			if i+1 >= os.args.len {
+				ret[key.value] = ''
 				break
+			}
+			if a.is_key(os.args[i+1]) {
+				println('The parameter ${key.alias} requires a value, but received none.')
+				exit(1)
+			}
+			ret[key.value] = os.args[i+1] // weave single value and multi-value together; single = 1x loop, multi = Xx loop
+			check_option(key, os.args[i+1])
+			if key.contains_multiple {
+				mut ii := 2
+				if i+ii < os.args.len {
+					for !a.is_key(os.args[i+ii]) {
+						ret[key.value] += ';' + os.args[i+ii]
+						ii++
+						if i+ii >= os.args.len { break }
+					}
+				}
 			}
 		}
 	}
