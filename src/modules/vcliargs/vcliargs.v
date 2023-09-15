@@ -99,7 +99,7 @@ pub fn (mut a Args) parse() map[string]string {
 				if i+ii >= os.args.len { break }
 			}
 			if !key.contains_multiple && ii > 2 {
-				println('The parameter ${key.alias} does not accept multiple values, but received multiple. Only first value will be accepted.')
+				println('The parameter ${key.alias} does not accept multiple values, but received ${os.args[i+1..i+ii]}. Only first value will be accepted.')
 				ii = 2
 			}
 			ret[key.value] = os.args[i+1..i+ii].join(';')
