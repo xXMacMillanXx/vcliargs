@@ -1,5 +1,12 @@
 module vcliargs
 
+enum ArgTypes {
+	string
+	float
+	interger
+	boolean
+}
+
 union Any {
 mut:
 	s []string

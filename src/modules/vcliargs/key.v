@@ -11,11 +11,13 @@ mut:
 	alias []string
 	is_valueless bool
 	contains_multiple bool
-	values []string // TODO
+	values []string // TODO: maybe not needed anymore
 	uses_default bool
 	default string
 	uses_options bool
 	options []string
+	type_checker bool
+	check_type ArgTypes
 }
 
 fn Key.new(key string, description string) Key {
@@ -68,6 +70,13 @@ pub fn (k Key) options(options []string) Key {
 	mut k2 := k
 	k2.uses_options = true
 	k2.options.insert(k2.options.len, options)
+	return k2
+}
+
+pub fn (k Key) type_check(typ ArgTypes) Key {
+	mut k2 := k
+	k2.type_checker = true
+	k2.check_type = typ
 	return k2
 }
 
