@@ -85,24 +85,24 @@ pub fn (mut a Args) parse() map[string]string {
 			}
 			if i+1 >= os.args.len {
 				ret[key.value] = ''
+				check_option(key, '')
 				break
 			}
 			if a.is_key(os.args[i+1]) {
 				println('The parameter ${key.alias} requires a value, but received none.')
 				exit(1)
 			}
-			ret[key.value] = os.args[i+1] // weave single value and multi-value together; single = 1x loop, multi = Xx loop
-			check_option(key, os.args[i+1])
-			if key.contains_multiple {
-				mut ii := 2
-				if i+ii < os.args.len {
-					for !a.is_key(os.args[i+ii]) {
-						ret[key.value] += ';' + os.args[i+ii]
-						ii++
-						if i+ii >= os.args.len { break }
-					}
-				}
+			mut ii := 1
+			for !a.is_key(os.args[i+ii]) {
+				check_option(key, os.args[i+ii])
+				ii++
+				if i+ii >= os.args.len { break }
 			}
+			if !key.contains_multiple && ii > 2 {
+				println('The parameter ${key.alias} does not accept multiple values, but received multiple. Only first value will be accepted.')
+				ii = 2
+			}
+			ret[key.value] = os.args[i+1..i+ii].join(';')
 		}
 	}
 
