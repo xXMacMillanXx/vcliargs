@@ -1,7 +1,7 @@
 module vcliargs
 
-// implement basic type check and converter, possible use for generics or only support for int, f64, bool and string?; requires map changes
-// multiple values with types; requires map changes or csv style string or just a 1:1 copy from args input
+// implement basic type check and converter in parse(); requires map changes to Any
+// multiple values with types; requires map changes, see comment above
 
 [heap]
 struct Key {
