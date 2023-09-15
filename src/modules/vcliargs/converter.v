@@ -1,6 +1,6 @@
 module vcliargs
 
-enum ArgTypes {
+pub enum ArgTypes {
 	string
 	float
 	interger
