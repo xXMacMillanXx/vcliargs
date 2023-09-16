@@ -3,7 +3,7 @@ module vcliargs
 pub enum ArgTypes {
 	string
 	float
-	interger
+	integer
 	boolean
 }
 
@@ -67,7 +67,7 @@ fn (a Any) get[T]() ?[]T {
 	return none
 }
 
-fn convert[T](s string) ?T {
+pub fn convert[T](s string) ?T {
 	$if T is string {
 		return s
 	}

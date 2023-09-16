@@ -57,6 +57,37 @@ fn check_option(key Key, input string) {
 	}
 }
 
+fn check_type(key Key, input string) {
+	if key.type_checker {
+		type_error := match key.check_type {
+			.string { false }
+			.float {
+				test := convert[f64](input) or { 0.0 }
+				if test == 0.0 && input != '0.0' {
+					true
+				} else { false }
+			}
+			.integer {
+				test := convert[int](input) or { 0 }
+				if test == 0 && input != '0' {
+					true
+				} else { false }
+			}
+			.boolean {
+				test := convert[bool](input) or { false }
+				if test == false && input != 'false' {
+					true
+				} else { false }
+			}
+		}
+
+		if type_error {
+			println('The parameter ${key.alias} expects a(n) ${key.check_type}, but found "${input}"')
+			exit(1)
+		}
+	}
+}
+
 pub fn (mut a Args) parse() map[string]string {
 	a.keys.sort(a.alias[0] < b.alias[0])
 	h := a.get_key_alias('help')
@@ -73,6 +104,7 @@ pub fn (mut a Args) parse() map[string]string {
 		if key.uses_default {
 			ret[key.value] = key.default
 			check_option(key, key.default)
+			check_type(key, key.default)
 		}
 	}
 
@@ -86,6 +118,7 @@ pub fn (mut a Args) parse() map[string]string {
 			if i+1 >= os.args.len {
 				ret[key.value] = ''
 				check_option(key, '')
+				check_type(key, '')
 				break
 			}
 			if a.is_key(os.args[i+1]) {
@@ -95,6 +128,7 @@ pub fn (mut a Args) parse() map[string]string {
 			mut ii := 1
 			for !a.is_key(os.args[i+ii]) {
 				check_option(key, os.args[i+ii])
+				check_type(key, os.args[i+ii])
 				ii++
 				if i+ii >= os.args.len { break }
 			}

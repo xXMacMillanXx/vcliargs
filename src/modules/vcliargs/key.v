@@ -1,8 +1,5 @@
 module vcliargs
 
-// implement basic type check and converter in parse(); requires map changes to Any
-// multiple values with types; requires map changes, see comment above
-
 [heap]
 struct Key {
 	value string
@@ -11,7 +8,6 @@ mut:
 	alias []string
 	is_valueless bool
 	contains_multiple bool
-	values []string // TODO: maybe not needed anymore
 	uses_default bool
 	default string
 	uses_options bool

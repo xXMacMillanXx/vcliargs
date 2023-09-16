@@ -42,6 +42,10 @@ prep.add_key(prep.key('path', 'Path for input file').alias(['-p', '--path']).mul
 prep.add_key(prep.key('path', 'Path for input file').alias(['-p', '--path']).options(['ABC', 'XYZ']))
 // .options([...]) specifies values, which will be accepted by the parameter, other values will be rejected
 
+prep.add_key(prep.key('count', 'Count down from the given integer').alias(['-c', '--count']).type_check(vcliargs.ArgTypes.integer))
+// .type_check(ArgTypes) checks if the user input is convertable into the specified data type. Supported types are string, integer (int), float (f64) and boolean (bool).
+// use the vcliargs.convert[T](input string) function to convert strings form the map you receive from parse() or cast it yourself.
+
 prep.add_key(prep.key('path', 'Path for input file').alias(['-p', '--path']).default('~/').multiple(true))
 // these function can be used together to have more control over the accepted input
 
