@@ -7,6 +7,7 @@ pub enum ArgTypes {
 	boolean
 }
 
+[deprecated: 'map stays with string, Any isn\'t necessary anymore']
 union Any {
 mut:
 	s []string
@@ -15,6 +16,7 @@ mut:
 	b []bool
 }
 
+[deprecated: 'map stays with string, Any.set() isn\'t necessary anymore']
 fn (mut a Any) set[T](input T) {
 	$if T is string {
 		a.s = [input]
@@ -33,6 +35,7 @@ fn (mut a Any) set[T](input T) {
 	}
 }
 
+[deprecated: 'map stays with string, Any.add() isn\'t necessary anymore']
 fn (mut a Any) add[T](input T) {
 	$if T is string {
 		a.s << input
@@ -51,6 +54,7 @@ fn (mut a Any) add[T](input T) {
 	}
 }
 
+[deprecated: 'map stays with string, Any.get() isn\'t necessary anymore']
 fn (a Any) get[T]() ?[]T {
 	$if T is string {
 		return a.s
