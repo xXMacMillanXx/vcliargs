@@ -52,7 +52,7 @@ fn (a Args) is_key(s string) bool {
 
 fn check_option(key Key, input string) {
 	if !key.is_valid_option(input) {
-		println('The option ${input} is not available for parameter ${key.alias}. Possible options are: ${key.options}')
+		println('The option "${input}" is not available for parameter ${key.alias}. Possible options are: ${key.options}')
 		exit(1)
 	}
 }
@@ -100,11 +100,23 @@ pub fn (mut a Args) parse() map[string]string {
 
 	mut ret := map[string]string{}
 
-	for key in a.keys {
+	for key in a.keys { // could use a clean up
 		if key.uses_default {
 			ret[key.value] = key.default
 			check_option(key, key.default)
 			check_type(key, key.default)
+		}
+		if key.is_required {
+			mut con := false
+			for v in key.alias {
+				if v in os.args || key.uses_default {
+					con = true
+				}
+			}
+			if !con {
+				println('The parameter ${key.alias} is required, but was not used.')
+				exit(1)
+			}
 		}
 	}
 

@@ -22,6 +22,7 @@ mut:
 	options []string
 	type_checker bool
 	check_type ArgTypes
+	is_required bool
 }
 
 fn Key.new(key string, description string) Key {
@@ -81,6 +82,12 @@ pub fn (k Key) type_check(typ ArgTypes) Key {
 	mut k2 := k
 	k2.type_checker = true
 	k2.check_type = typ
+	return k2
+}
+
+pub fn (k Key) required(b bool) Key {
+	mut k2 := k
+	k2.is_required = true
 	return k2
 }
 
