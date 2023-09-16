@@ -1,6 +1,7 @@
 module vcliargs
 
 // TODO list
+// edit README for easier readability - probably own sections / headers for methods.
 // implement automatic usage generation for help text
 // remove unneseccary (most things from converter.v) and deprecated code sections
 // think about multi-values; currently csv in string; maybe convert() could also return []T?; an array would be good...
