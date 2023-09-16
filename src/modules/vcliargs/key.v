@@ -6,7 +6,7 @@ module vcliargs
 // implement automatic usage generation for help text
 // remove unneseccary (most things from converter.v) and deprecated code sections
 // think about multi-values; currently csv in string; maybe convert() could also return []T?; an array would be good...
-// maybe the help text needs a way to represent what type is expected: (INT), (F64), (STR), (BOOL)
+// help text representations for: expected types - (INT), (F64), (STR), (BOOL) and if value is required - * or ^
 
 [heap]
 struct Key {
