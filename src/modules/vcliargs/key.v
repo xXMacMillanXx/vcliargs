@@ -1,8 +1,6 @@
 module vcliargs
 
 // TODO list
-// edit README for easier readability - probably own sections / headers for methods.
-// add .required() to keys, so the parse() can check if all necessary paramters are provided. user-input and default values count as provided values.
 // implement automatic usage generation for help text
 // remove unneseccary (most things from converter.v) and deprecated code sections
 // think about multi-values; currently csv in string; maybe convert() could also return []T?; an array would be good...
