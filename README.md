@@ -156,3 +156,12 @@ enum ArgTypes {
 ```
 
 An enum, which is used for checking types of user input.
+
+
+### convert()
+
+```v
+fn convert[T](s string) ?T
+```
+
+Trys to convert the given string s into the given type T. If type T is not string, f64, int or bool, the function will return none, otherwise it will return the converted value or the default value of the given type.
