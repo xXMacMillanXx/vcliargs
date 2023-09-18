@@ -2,6 +2,7 @@ module vcliargs
 
 // TODO list
 // think about multi-values; currently csv in string; maybe convert() could also return []T?; an array would be good...
+// write tests to insure functionality; and see if changes break said functionality
 
 [heap]
 struct Key {

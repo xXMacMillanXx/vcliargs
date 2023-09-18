@@ -155,35 +155,6 @@ pub fn (mut a Args) parse() map[string]string {
 	return ret
 }
 
-[deprecated: 'help is now part of Key instead of Args']
-fn print_help_line(key Key) {
-	mut collection := map[string][]string{}
-
-	collection['alias'] << key.alias.join(' ')
-
-	if key.is_valueless {
-		collection['value'] << ''
-	} else {
-		if !key.uses_options && !key.uses_default {
-			collection['value'] << 'VALUE'
-		}
-		if key.contains_multiple {
-			collection['value'] << '<VALUE ...>'
-		}
-		if key.uses_default {
-			collection['value'] << '{' + key.default + '}'
-		}
-		if key.uses_options {
-			collection['value'] << '[' + key.options.join(', ') + ']'
-		}
-	}
-
-	params := '${collection['alias'][0]}'
-	param_vals := '${collection['value'].join(' ')}'
-
-	println('${params:-20} ${param_vals:-20} ${key.description}')
-}
-
 pub fn (a Args) print_help() {
 	println(a.texts[0]) // program name
 	println('')
@@ -199,9 +170,12 @@ pub fn (a Args) print_help() {
 	println(a.texts[1]) // program description
 	println('')
 	println('Options')
+	mut help := []string{}
 	for key in a.keys {
-		println(key.gen_help())
+		help << key.gen_help()
 	}
+	help.sort()
+	println(help.join('\n'))
 	println('')
 	println(a.texts[2]) // program epilog
 }
