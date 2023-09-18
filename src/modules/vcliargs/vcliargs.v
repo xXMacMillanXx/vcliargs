@@ -155,6 +155,7 @@ pub fn (mut a Args) parse() map[string]string {
 	return ret
 }
 
+[deprecated: 'help is now part of Key instead of Args']
 fn print_help_line(key Key) {
 	mut collection := map[string][]string{}
 
@@ -186,13 +187,20 @@ fn print_help_line(key Key) {
 pub fn (a Args) print_help() {
 	println(a.texts[0]) // program name
 	println('')
-	println('usage: ') // TODO, automatic usage gen
+	print('usage: ')
+	mut usage := []string{}
+	for key in a.keys {
+		usage << key.gen_usage()
+	}
+	usage.sort()
+	println(usage.join(' '))
+	println('')
 	println('')
 	println(a.texts[1]) // program description
 	println('')
 	println('Options')
 	for key in a.keys {
-		print_help_line(key)
+		println(key.gen_help())
 	}
 	println('')
 	println(a.texts[2]) // program epilog

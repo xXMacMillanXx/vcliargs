@@ -1,10 +1,7 @@
 module vcliargs
 
 // TODO list
-// implement automatic usage generation for help text
-// remove unneseccary (most things from converter.v) and deprecated code sections
 // think about multi-values; currently csv in string; maybe convert() could also return []T?; an array would be good...
-// help text representations for: expected types - (INT), (F64), (STR), (BOOL) and if value is required - * or ^
 
 [heap]
 struct Key {
@@ -25,23 +22,6 @@ mut:
 
 fn Key.new(key string, description string) Key {
 	return Key { value: key, description: description }
-}
-
-[deprecated: 'check is unnecessary, duplicates don\'t break anything, just use .alias()']
-fn (mut k Key) add_alias(alias string) {
-	if alias in k.alias {
-		return
-	}
-
-	k.alias << alias
-}
-
-[deprecated: 'obsolete since options can be added with builder-like functions e.g., .alias(), .default(), etc.']
-fn (mut k Key) set_options(def string, single bool, multiple bool) {
-	k.is_valueless = single
-	k.contains_multiple = multiple
-	if def != "" { k.uses_default = true }
-	k.default = def
 }
 
 pub fn (k Key) alias(alias []string) Key {
@@ -103,4 +83,69 @@ fn (k Key) is_valid_option(testing string) bool {
 		return false
 	}
 	return true
+}
+
+fn (k Key) gen_usage() string {
+	mut ret := []string{}
+
+	if !k.is_required {
+		ret << '['
+	}
+	ret << k.alias.join('|')
+
+	if !k.is_valueless {
+		if !k.contains_multiple {
+			ret << ' <' + k.check_type.abbreviation() + '>'
+		} else {
+			ret << ' <' + k.check_type.abbreviation() + ',...>'
+		}
+		if k.uses_default {
+			ret << '{' + k.default + '}'
+		}
+		if k.uses_options {
+			ret << '[' + k.options.join('|') + ']'
+		}
+	}
+
+	if !k.is_required {
+		ret << ']'
+	}
+
+	return ret.join('')
+}
+
+fn (k Key) gen_help() string {
+	mut collection := map[string][]string{}
+
+	collection['alias'] << k.alias.join(' ')
+
+	if k.is_valueless {
+		collection['value'] << ''
+	} else {
+		if !k.contains_multiple {
+			if k.is_required {
+				collection['value'] << k.check_type.abbreviation()
+			} else {
+				collection['value'] << '<' + k.check_type.abbreviation() + '>'
+			}
+		}
+		if k.contains_multiple {
+			if k.is_required {
+				collection['value'] << k.check_type.abbreviation() + ',...'
+			} else {
+				collection['value'] << '<' + k.check_type.abbreviation() + ',...>'
+			}
+		}
+		if k.uses_default {
+			collection['value'] << '{' + k.default + '}'
+		}
+		if k.uses_options {
+			collection['value'] << '[' + k.options.join(', ') + ']'
+		}
+	}
+
+	params := '${collection['alias'][0]}'
+	param_vals := '${collection['value'].join(' ')}'
+
+	return '${params:-20} ${param_vals:-30} ${k.description}'
 }
