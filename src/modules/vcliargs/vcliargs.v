@@ -96,7 +96,7 @@ fn check_type(key Key, input string) {
 }
 
 pub fn (mut a Args) parse() map[string]string {
-	a.keys.sort(a.alias[0] < b.alias[0])
+	// a.keys.sort(a.alias[0] < b.alias[0]) // why did I sort the keys here?
 	h := a.get_key_alias('help')
 	for v in h {
 		if v in a.args {
@@ -108,6 +108,9 @@ pub fn (mut a Args) parse() map[string]string {
 	mut ret := map[string]string{}
 
 	for key in a.keys { // could use a clean up
+		if key.alias.len == 0 {
+			ret[key.value] = ''
+		}
 		if key.uses_default {
 			ret[key.value] = key.default
 			check_option(key, key.default)
@@ -168,6 +171,7 @@ pub fn (a Args) print_help() {
 	print('usage: ')
 	mut usage := []string{}
 	for key in a.keys {
+		if key.alias.len == 0 { continue }
 		usage << key.gen_usage()
 	}
 	usage.sort()
@@ -179,6 +183,7 @@ pub fn (a Args) print_help() {
 	println('Options')
 	mut help := []string{}
 	for key in a.keys {
+		if key.alias.len == 0 { continue }
 		help << key.gen_help()
 	}
 	help.sort()

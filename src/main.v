@@ -10,6 +10,7 @@ fn main() {
 	x.add_key(x.key('param1', 'Tests new key creation').alias(['-p1', '--param1']).options(['XYZ', 'ABC', 'JKL']).required(true))
 	x.add_key(x.key('param2', 'Tests new key creation').alias(['-p2', '--param2']).default('ABC').options(['XYZ', 'ABC', 'JKL']))
 	x.add_key(x.key('param3', 'Tests new key creation').alias(['-p3', '--param3']).default('123').multiple(true).type_check(vc.ArgTypes.integer))
+	x.add_key(x.key('hidden', 'Hidden value, which gets parsed for internal use.').default('hello'))
 
 	y := x.parse()
 

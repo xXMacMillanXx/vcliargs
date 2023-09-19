@@ -49,6 +49,9 @@ prep.add_key(prep.key('count', 'Count down from the given integer').alias(['-c',
 prep.add_key(prep.key('count', 'Count down from the given integer').alias(['-c', '--count']).required(true))
 // .required(true) makes it necessary for the parameter to need a value. THe value can come from default or user input.
 
+prep.add_key(prep.key('hidden', 'A hidden value to the user, but can be used internally.').default('something'))
+// keys without .alias() won't be accessible by the user, only internally through code.
+
 prep.add_key(prep.key('path', 'Path for input file').alias(['-p', '--path']).default('~/').multiple(true))
 // these function can be used together to have more control over the accepted input
 
@@ -94,7 +97,7 @@ The Key struct contains all the information needed to parse and check the input 
 fn (k Key) alias(s []string) Key
 ```
 
-This function is necessary. Sets the parameter names, which the user uses to specify parameter values.
+This function is necessary for accepting user input, but can be left out for hidden internal usage. Sets the parameter names, which the user uses to specify parameter values.
 
 #### default()
 

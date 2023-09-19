@@ -1,7 +1,6 @@
 module vcliargs
 
 // TODO list
-// keys without alias could be handled as hidden value, accessible after parse, but not changable by the user
 // think about multi-values; currently csv in string; maybe convert() could also return []T?; an array would be good...
 // write tests to insure functionality; and see if changes break said functionality
 
