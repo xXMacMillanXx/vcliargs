@@ -43,8 +43,8 @@ fn (a Args) get_key(s string) ?Key {
 	return none
 }
 
-// used for tests
-fn (mut a Args) set_args(s []string) {
+// used for tests, setting custom "os.args"
+fn (mut a Args) set_args(s ...string) {
 	a.args = s
 }
 
