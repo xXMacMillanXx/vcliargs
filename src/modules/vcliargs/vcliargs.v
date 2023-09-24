@@ -134,7 +134,7 @@ pub fn (mut a Args) parse() map[string]string {
 		if a.is_key(arg) {
 			key := a.get_key(arg) or { panic(err) }
 			if key.is_valueless {
-				ret[key.value] = key.value
+				ret[key.value] = key.value // could also be true, to indicate that the flag was used
 				continue
 			}
 			if i+1 >= a.args.len {
