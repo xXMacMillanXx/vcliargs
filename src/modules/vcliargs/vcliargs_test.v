@@ -46,3 +46,30 @@ fn test_parse_basics_alias() {
 	assert x['test4'] == 'test4'
 	assert x['test5'] == 'test5'
 }
+
+fn test_parse_basics_default() {
+	mut arg := Args.new('vcliargs test', 'testing the functionality', 'tests')
+	arg.add_key(arg.key('test1', 'test1').default('test1'))
+	mut x := arg.parse()
+
+	assert x.len == 1
+	assert x['test1'] == 'test1'
+
+	arg.set_args('-t2', 'test2')
+	arg.add_key(arg.key('test2', 'test2').alias(['-t2', '--test2']).default('test2test'))
+	arg.add_key(arg.key('test3', 'test3').alias(['-t3']).alias(['--test3']).default('test3test'))
+	x = arg.parse()
+
+	assert x.len == 3
+	assert x['test2'] == 'test2'
+	assert x['test3'] == 'test3test'
+	
+	arg.set_args('-t5', 'test5', 'test5too')
+	arg.add_key(arg.key('test4', 'test4').alias(['-t4']).alias(['--test4', '--test4too']).default('ABC').options(['ABC', 'XYZ']))
+	arg.add_key(arg.key('test5', 'test5').alias(['-t5', '--test5']).alias(['--test5too']).default('ABC').multiple(true))
+	x = arg.parse()
+
+	assert x.len == 5
+	assert x['test4'] == 'ABC'
+	assert x['test5'] == 'test5;test5too'
+}
