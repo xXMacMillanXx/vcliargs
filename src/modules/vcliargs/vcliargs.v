@@ -133,7 +133,7 @@ pub fn (mut a Args) parse() map[string]string {
 	for i, arg in a.args {
 		if a.is_key(arg) {
 			key := a.get_key(arg) or { panic(err) }
-			if key.is_valueless {
+			if key.is_valueless { // currently doesn't care if it receives a value -> ignored; could be changed to give an error, but not sure
 				ret[key.value] = key.value // could also be true, to indicate that the flag was used
 				continue
 			}

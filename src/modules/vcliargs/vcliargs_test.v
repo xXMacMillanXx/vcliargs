@@ -73,3 +73,29 @@ fn test_parse_basics_default() {
 	assert x['test4'] == 'ABC'
 	assert x['test5'] == 'test5;test5too'
 }
+
+fn test_parse_basics_valueless() {
+	mut arg := Args.new('vcliargs test', 'testing the functionality', 'tests')
+	arg.set_args('-t1', '-t3', 'test3')
+	arg.add_key(arg.key('test1', 'test1').alias(['-t1']).valueless(true))
+	arg.add_key(arg.key('test2', 'test2').alias(['-t2', '--test2']).valueless(true))
+	arg.add_key(arg.key('test3', 'test3').alias(['-t3']).alias(['--test3']).valueless(true))
+	mut x := arg.parse()
+
+	assert x.len == 2
+	assert x['test1'] == 'test1'
+	assert x['test3'] == 'test3'
+}
+
+fn test_parse_basics_multiple() {
+	mut arg := Args.new('vcliargs test', 'testing the functionality', 'tests')
+	arg.set_args('-t1', 'test1', 'test1too', '-t3', 'test3')
+	arg.add_key(arg.key('test1', 'test1').alias(['-t1']).multiple(true))
+	arg.add_key(arg.key('test2', 'test2').alias(['-t2', '--test2']).multiple(true))
+	arg.add_key(arg.key('test3', 'test3').alias(['-t3']).alias(['--test3']).multiple(true))
+	mut x := arg.parse()
+
+	assert x.len == 2
+	assert x['test1'] == 'test1;test1too'
+	assert x['test3'] == 'test3'
+}
