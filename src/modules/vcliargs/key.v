@@ -4,7 +4,7 @@ module vcliargs
 // think about multi-values; currently csv in string; maybe convert() could also return []T?; an array would be good...
 // write tests to insure functionality; and see if changes break said functionality
 
-[heap]
+@[heap]
 struct Key {
 	value string
 	description string
