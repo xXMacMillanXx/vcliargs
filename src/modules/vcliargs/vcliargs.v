@@ -17,6 +17,10 @@ pub fn Args.new(name string, desc string, epi string) Args {
 	return x
 }
 
+pub fn (a Args) key_new(config KeyConfig) Key {
+	return Key.newer(config)
+}
+
 pub fn (a Args) key(key string, description string) Key {
 	return Key.new(key, description)
 }

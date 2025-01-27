@@ -4,6 +4,23 @@ module vcliargs
 // think about multi-values; currently csv in string; maybe convert() could also return []T?; an array would be good...
 // write tests to insure functionality; and see if changes break said functionality
 
+@[params]
+pub struct KeyConfig {
+pub:
+	value string @[required]
+	description string @[required]
+	alias []string
+	is_valueless bool
+	contains_multiple bool
+	uses_default bool
+	default string
+	uses_options bool
+	options []string
+	type_checker bool
+	check_type ArgTypes
+	is_required bool
+}
+
 @[heap]
 struct Key {
 	value string
@@ -19,6 +36,22 @@ mut:
 	type_checker bool
 	check_type ArgTypes
 	is_required bool
+}
+
+fn Key.newer(config KeyConfig) Key {
+	return Key {
+		value: config.value,
+		description: config.description,
+		alias: config.alias,
+		contains_multiple: config.contains_multiple,
+		uses_default: config.uses_default,
+		default: config.default,
+		uses_options: config.uses_options,
+		options: config.options,
+		type_checker: config.type_checker,
+		check_type: config.check_type,
+		is_required: config.is_required
+	}
 }
 
 fn Key.new(key string, description string) Key {
@@ -72,7 +105,7 @@ pub fn (k Key) required(b bool) Key {
 
 fn (k Key) is_key(test string) bool {
 	if test in k.alias { return true }
-	
+
 	return false
 }
 
