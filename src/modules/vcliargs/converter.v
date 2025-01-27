@@ -27,7 +27,7 @@ pub fn convert[T](s string) ?T {
 		return s.f64()
 	}
 	$if T is bool {
-		return s.bool()
+		return s.to_lower().bool()
 	}
 	return none
 }
